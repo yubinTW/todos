@@ -3,7 +3,7 @@ import { ITodo } from '../types/todo'
 
 export default function () {
   let count = 3
-  createServer({
+  return createServer({
     models: {
       todo: Model
     },
