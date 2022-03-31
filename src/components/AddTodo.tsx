@@ -26,11 +26,18 @@ const AddTodo = (props: { saveTodo: (e: React.FormEvent, formData: ITodo) => voi
       <div>
         <div>
           <label htmlFor="name">Name</label>
-          <input onChange={handleForm} type="text" id="name" value={formData.name} required />
+          <input onChange={handleForm} type="text" id="name" data-testid="name" value={formData.name} required />
         </div>
         <div>
           <label htmlFor="description">Description</label>
-          <input onChange={handleForm} type="text" id="description" value={formData.description} required />
+          <input
+            onChange={handleForm}
+            type="text"
+            id="description"
+            data-testid="description"
+            value={formData.description}
+            required
+          />
         </div>
       </div>
       <button disabled={isDisabled}>Add Todo</button>

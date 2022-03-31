@@ -9,7 +9,11 @@ const App = () => {
   const [todos, setTodos] = useState<ITodo[]>([])
 
   useEffect(() => {
-    fetchTodos()
+    let isMounted = true
+    if (isMounted) fetchTodos()
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const fetchTodos = async () => {
