@@ -1,58 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import TodoItem from './components/TodoItem'
+import AddTodo from './components/AddTodo'
+import { ITodo } from './types/todo'
+import { getTodos, addTodo, updateTodo, deleteTodo } from './services/nodeService'
+import './App.css'
 
-function App() {
+const App = () => {
+  const [todos, setTodos] = useState<ITodo[]>([])
+
+  useEffect(() => {
+    fetchTodos()
+  }, [])
+
+  const fetchTodos = async () => {
+    try {
+      const {
+        data: { todos }
+      } = await getTodos()
+      setTodos(todos)
+    } catch (error) {
+      console.log(`fetch todos error: ${error}`)
+    }
+  }
+
+  const handleSaveTodo = (e: React.FormEvent, formData: ITodo): void => {
+    e.preventDefault()
+    addTodo(formData)
+      .then((_) => fetchTodos())
+      .catch((err) => console.error(err))
+  }
+
+  const handleUpdateTodo = (todo: ITodo): void => {
+    updateTodo(todo)
+      .then((_) => fetchTodos())
+      .catch((err) => console.error(err))
+  }
+
+  const handleDeleteTodo = (id: string): void => {
+    deleteTodo(id)
+      .then(() => fetchTodos())
+      .catch((err) => console.log(err))
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+    <main className="App">
+      <h1>My Todos</h1>
+      <AddTodo saveTodo={handleSaveTodo} />
+      {todos.map((todo: ITodo) => (
+        <TodoItem key={todo.id} updateTodo={handleUpdateTodo} deleteTodo={handleDeleteTodo} todo={todo} />
+      ))}
+    </main>
+  )
 }
 
-export default App;
+export default App
